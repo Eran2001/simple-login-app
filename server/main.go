@@ -11,11 +11,17 @@ import (
 func main() {
 	db.InitDB()
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintln(w, "Server running 🚀")
-	})
+	http.HandleFunc("/api/v1/users", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 
-	http.HandleFunc("/users", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
 		rows, err := db.DB.Query("SELECT id, name, email FROM users")
 		if err != nil {
 			http.Error(w, "DB query error", http.StatusInternalServerError)
