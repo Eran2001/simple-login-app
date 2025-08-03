@@ -3,6 +3,7 @@ package routes
 import (
 	"net/http"
 	"server/handlers"
+	"server/middleware"
 )
 
 func SetupRoutes() *http.ServeMux {
@@ -12,7 +13,8 @@ func SetupRoutes() *http.ServeMux {
 		w.Write([]byte("🚀 Server is up!"))
 	})
 
-	mux.HandleFunc("/api/v1/users", handlers.GetUsers)
+	// Wrap handler with CORS middleware
+	mux.HandleFunc("/api/v1/users", middleware.CORSMiddleware(handlers.GetUsers))
 
 	return mux
 }
