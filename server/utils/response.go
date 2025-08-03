@@ -5,14 +5,24 @@ import (
 	"net/http"
 )
 
-func RespondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
+type ApiResponse struct {
+	Code    string         `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
+}
+
+func SendResponse(w http.ResponseWriter, statusCode int, code string, message string, data interface{}) {
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(code)
-	json.NewEncoder(w).Encode(map[string]interface{}{
-		"data": payload,
+	w.WriteHeader(statusCode)
+	json.NewEncoder(w).Encode(ApiResponse{
+		Code:    code,
+		Message: message,
+		Data:    data,
 	})
 }
 
-func RespondWithError(w http.ResponseWriter, code int, message string) {
-	RespondWithJSON(w, code, map[string]string{"error": message})
+func SendError(w http.ResponseWriter, statusCode int, message string) {
+	statusText := http.StatusText(statusCode)
+	SendResponse(w, statusCode, statusText, message, nil)
 }
+

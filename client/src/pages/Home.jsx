@@ -2,21 +2,33 @@ import React, { useEffect, useState } from "react";
 import API from "../services";
 
 const Home = () => {
-  const [users, setUsers] = useState(null);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     fetchAllUsers();
   }, []);
 
   const fetchAllUsers = async () => {
-    const response = await API.privateApi.getAllUsers();
-    setUsers(response.data);
+    try {
+      const response = await API.privateApi.getAllUsers();
+      if (response.data.code === "OK") {
+        setUsers(response.data.data);
+      } else {
+        throw new Error();
+      }
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
   };
+
   return (
     <>
-      <div>
-        <h1>{users}</h1>
-      </div>
+      {users.map((user) => (
+        <div key={user.ID}>
+          <h2>{user.Name}</h2>
+          <p>{user.Email}</p>
+        </div>
+      ))}
     </>
   );
 };

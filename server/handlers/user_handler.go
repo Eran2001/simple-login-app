@@ -10,7 +10,7 @@ import (
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 	rows, err := db.DB.Query("SELECT id, name, email FROM users")
 	if err != nil {
-		utils.RespondWithError(w, http.StatusInternalServerError, "DB query error")
+		utils.SendError(w, http.StatusInternalServerError, "DB query error")
 		return
 	}
 	defer rows.Close()
@@ -19,11 +19,11 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 	for rows.Next() {
 		var user models.User
 		if err := rows.Scan(&user.ID, &user.Name, &user.Email); err != nil {
-			utils.RespondWithError(w, http.StatusInternalServerError, "Error scanning user")
+			utils.SendError(w, http.StatusInternalServerError, "Error scanning user")
 			return
 		}
 		users = append(users, user)
 	}
 
-	utils.RespondWithJSON(w, http.StatusOK, users)
+	utils.SendResponse(w, http.StatusOK, "OK", "success", users)
 }
