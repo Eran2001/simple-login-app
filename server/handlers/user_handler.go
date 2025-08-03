@@ -25,5 +25,5 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 		users = append(users, user)
 	}
 
-	utils.SendResponse(w, http.StatusOK, "OK", "success", users)
+	utils.SendResponse(w, http.StatusOK, "200", "success", users)
 }
