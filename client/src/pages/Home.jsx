@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+
+import Notification from "../components/ui/Notification";
 import API from "../services";
 
 const Home = () => {
@@ -14,10 +16,10 @@ const Home = () => {
       if (response.data.code === "OK") {
         setUsers(response.data.data);
       } else {
-        throw new Error();
+        Notification.error("Error fetching users!");
       }
     } catch (error) {
-      console.error("Error fetching users:", error);
+      Notification.error("Error fetching users:", error);
     }
   };
 
