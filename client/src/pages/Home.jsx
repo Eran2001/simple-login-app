@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import Notification from "../components/ui/Notification";
+import Modal from "../components/ui/Modal";
 import API from "../services";
 
 const Home = () => {
@@ -54,6 +55,9 @@ const Home = () => {
             <th className="text-left px-6 py-3 text-sm font-semibold max-sm:px-1 max-sm:py-2">
               Email
             </th>
+            <th className="text-left px-6 py-3 text-sm font-semibold max-sm:px-1 max-sm:py-2">
+              Action
+            </th>
           </tr>
         </thead>
         <tbody className="bg-red-100 divide-y divide-gray-200">
@@ -71,30 +75,36 @@ const Home = () => {
               <td className="px-6 py-4 max-sm:px-1 max-sm:py-2">
                 {user.Email}
               </td>
+              <td className="px-6 py-4 max-sm:px-1 max-sm:py-2">&</td>
             </tr>
           ))}
         </tbody>
       </table>
-      {user && (
-        <div
-          className="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50"
-          onClick={closeModal}
-        >
-          <div
-            className="bg-white rounded-lg shadow-lg max-w-md w-full p-6 relative"
-            onClick={(e) => e.stopPropagation()}
-          >
+      <Modal
+        isOpen={!!user}
+        onClose={closeModal}
+        title="Selected User"
+        footer={
+          <>
             <button
               onClick={closeModal}
-              className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-xl font-bold"
-              aria-label="Close modal"
+              className="py-2 px-3 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none"
             >
-              &times;
+              Close
             </button>
-
-            <h2 className="text-xl font-semibold text-red-600 mb-4">
-              Selected User
-            </h2>
+            <button
+              onClick={() => {
+                Notification.success("Save changes clicked!");
+              }}
+              className="py-2 px-3 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+            >
+              Save changes
+            </button>
+          </>
+        }
+      >
+        {user && (
+          <>
             <p>
               <strong>ID:</strong> {user.ID}
             </p>
@@ -104,9 +114,9 @@ const Home = () => {
             <p>
               <strong>Email:</strong> {user.Email}
             </p>
-          </div>
-        </div>
-      )}
+          </>
+        )}
+      </Modal>
     </>
   );
 };
