@@ -8,7 +8,7 @@ import (
 )
 
 func GetUsers(w http.ResponseWriter, r *http.Request) {
-	rows, err := db.DB.Query("SELECT id, name, email FROM users")
+	rows, err := db.DB.Query("SELECT * FROM users")
 	if err != nil {
 		utils.SendError(w, http.StatusInternalServerError, "DB query error")
 		return
@@ -26,4 +26,24 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 	}
 
 	utils.SendResponse(w, http.StatusOK, "OK", "success", users)
+}
+
+func GetSingleUsers(w http.ResponseWriter, r *http.Request) {
+	id := r.URL.Path[len("/api/v1/users/"):]
+
+	if id == "" {
+		utils.SendError(w, http.StatusBadRequest, "User id is required")
+		return
+	}
+
+	row := db.DB.QueryRow("SELECT * FROM users WHERE id = ?", id)
+
+	var user models.User
+    err := row.Scan(&user.ID, &user.Name, &user.Email)
+    if err != nil {
+        utils.SendError(w, http.StatusNotFound, "User not found")
+        return
+    }
+
+	utils.SendResponse(w, http.StatusOK, "OK", "success", user)
 }

@@ -16,5 +16,7 @@ func SetupRoutes() *http.ServeMux {
 	// Wrap handler with CORS middleware
 	mux.HandleFunc("/api/v1/users", middleware.CORSMiddleware(handlers.GetUsers))
 
+	mux.HandleFunc("/api/v1/users/", middleware.CORSMiddleware(handlers.GetSingleUsers))
+
 	return mux
 }
